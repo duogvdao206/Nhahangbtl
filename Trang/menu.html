@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thực Đơn</title>
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
-    <script src="/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/JS/jquery-3.7.1.js"></script>
+    <script src="bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/jquery-3.7.1.js"></script>
 </head>
 <style>
     .menutrangchu {
@@ -143,9 +143,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/Trang/tranguser.html">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Trang/menu.html">Thực đơn</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Trang/datban.html">Đặt bàn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/tranguser.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/menu.html">Thực đơn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/datban.html">Đặt bàn</a></li>
                 </ul>
                 <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="🔎 Tìm kiếm món ăn...">
@@ -153,7 +153,7 @@
                 <div class="auth-cart ms-3">
                     <a href="#" class="login text-decoration-none">Đăng nhập</a>
                     <button onclick="logout()" class="btn btn-outline-danger ms-2">Đăng xuất</button>
-                    <a href="/Trang/menu.html" class="giohang text-decoration-none">🛒</a>
+                    <a href="Trang/menu.html" class="giohang text-decoration-none">🛒</a>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
     </table>
     
     <div class="justify-content-end me-5">
-        <a href="/Trang/datban.html" id="btn2"><button class="btn btn-warning">Đặt Bàn</button></a>
+        <a href="Trang/datban.html" id="btn2"><button class="btn btn-warning">Đặt Bàn</button></a>
     </div>
     <footer class="footer bg-light text-dark mt-5 py-4">
         <div class="container">
@@ -242,21 +242,21 @@
                 loginLink.textContent = username; // Thay chữ "Đăng nhập" thành username
                 loginLink.href = "#"; // Không cần chuyển hướng đâu cả
             } else {
-                loginLink.href = "/Trang/login.html"; // Nếu chưa đăng nhập, quay lại trang login
+                loginLink.href = "Trang/login.html"; // Nếu chưa đăng nhập, quay lại trang login
             }
         });
 
         function logout() {
             localStorage.removeItem("username"); // Xóa username khỏi localStorage
             localStorage.removeItem("userId"); // Xóa userId nếu có
-            window.location.href = "/Trang/login.html"; // Quay lại trang đăng nhập
+            window.location.href = "Trang/login.html"; // Quay lại trang đăng nhập
         }
         document.addEventListener("DOMContentLoaded", function () {
         let username = localStorage.getItem("username");
 
         if (!username) {
             alert("Bạn cần đăng nhập trước!");
-            window.location.href = "/Trang/login.html"; // Chuyển hướng về trang đăng nhập
+            window.location.href = "Trang/login.html"; // Chuyển hướng về trang đăng nhập
         }
     });
     $(document).ready(function () {
@@ -459,7 +459,7 @@ $(document).ready(function () {
         function logout() {
             localStorage.removeItem("username");
             localStorage.removeItem("userId");
-            window.location.href = "/Trang/login.html";
+            window.location.href = "Trang/login.html";
         }
     </script>
 </body>
