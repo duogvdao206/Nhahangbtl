@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 0;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -250px; /* Ẩn sidebar mặc định bên ngoài màn hình */
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .sidebar a:hover {
+            background: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+        .submenu {
+            padding-left: 30px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 14px;
+        }
+        .content {
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .menu-toggle {
+            cursor: pointer;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* Hiển thị sidebar khi màn hình đủ lớn (desktop) */
+        @media (min-width: 768px) {
+            .sidebar {
+                left: 0; /* Hiển thị luôn sidebar khi màn hình đủ lớn */
+            }
+            .content {
+                margin-left: 250px; /* Đẩy nội dung sang bên phải để tránh che khuất */
+            }
+        }
+
+        /* Ẩn sidebar trên màn hình nhỏ */
+        @media (max-width: 767px) {
+            .sidebar {
+                left: -250px; /* Ẩn sidebar trên màn hình nhỏ */
+            }
+            .sidebar.show {
+                left: 0; /* Hiển thị sidebar khi có class show */
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h4 class="text-center">Administration</h4>
+    <a href="/Trang/trangadmin.html">📊 Thống kê</a>
+
+    <a class="menu-toggle">📜 Hóa đơn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/xacnhandon.html">✔️ Xác nhận đơn</a>
+        <a href="/Trang/lichsudonhang.html">📦 Đơn đã được gửi</a>
+    </div>
+
+    <a class="menu-toggle">🪑 Mặt bàn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/sodoban.html">📍 Sơ đồ bàn</a>
+        <a href="/Trang/lichdatbanadmin.html">📅 Lịch đặt bàn</a>
+    </div>
+
+    <a href="/Trang/mathang.html">🛍 Mặt hàng</a>
+
+    <a class="menu-toggle" href="/Trang/trangnhanvien.html">👥 Nhân viên </a>
+
+    <a class="menu-toggle">⚙️ Hệ thống ⬇</a>
+    <div class="submenu">
+        <a href="#">📑 Quản lý trang</a>
+        <a href="/Trang/tranglienheadmin.html">Thư liên hệ</a>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <nav class="navbar navbar-light bg-white shadow-sm p-3 mb-4">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary d-md-none" type="button" onclick="toggleSidebar()">☰</button>
+            <input class="form-control w-50" type="search" placeholder="Search" aria-label="Search">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Admin</span>
+            </div>
+        </div>
+    </nav>
+    <h2>Danh sách tin nhắn</h2>
+    <div id="messageContainer">
+        <!-- Messages will appear here -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    document.querySelectorAll('.menu-toggle').forEach(item => {
+        item.addEventListener('click', () => {
+            let submenu = item.nextElementSibling;
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        const content = document.querySelector('.content');
+        if (sidebar.classList.contains('show')) {
+            content.style.marginLeft = '250px'; // Đẩy nội dung sang phải khi sidebar mở
+        } else {
+            content.style.marginLeft = '0'; // Quay lại khi sidebar đóng
+        }
+    }
+
+    window.onload = function() {
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        const messageContainer = document.getElementById('messageContainer');
+
+        if (messages.length === 0) {
+            messageContainer.innerHTML = "<p>Không có tin nhắn nào.</p>";
+        }
+
+        messages.forEach(msg => {
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Tin nhắn từ: ${msg.phone}</h5>
+                        <p><strong>Email:</strong> ${msg.email}</p>
+                        <p><strong>Message:</strong> ${msg.message}</p>
+                    </div>
+                </div>
+            `;
+            messageContainer.appendChild(messageElement);
+        });
+    };
+</script>
+
+</body>
+</html>

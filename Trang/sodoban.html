@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .sidebar a:hover {
+            background: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+        .submenu {
+            padding-left: 30px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 14px;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .menu-toggle {
+            cursor: pointer;
+        }
+
+        .table-box {
+            background: #ffc107;
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .area-btn.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        /* Sidebar for mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px; /* Hide sidebar */
+            }
+            .sidebar.show {
+                left: 0; /* Show sidebar */
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h4 class="text-center">Administration</h4>
+    <a href="/Trang/trangadmin.html">📊 Thống kê</a>
+
+    <a class="menu-toggle">📜 Hóa đơn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/xacnhandon.html">✔️ Xác nhận đơn</a>
+        <a href="#">📦 Đơn đã được gửi</a>
+    </div>
+
+    <a class="menu-toggle">🪑 Mặt bàn ⬇</a>
+    <div class="submenu">
+        <a href="#">📍 Sơ đồ bàn</a>
+        <a href="/Trang/lichdatbanadmin.html">📅 Lịch đặt bàn</a>
+    </div>
+
+    <a href="/Trang/mathang.html">🛍 Mặt hàng</a>
+
+    <a class="menu-toggle" href="/Trang/trangnhanvien.html">👥 Nhân viên </a>
+
+    <a class="menu-toggle">⚙️ Hệ thống ⬇</a>
+    <div class="submenu">
+        <a href="#">📑 Quản lý Menu</a>
+        <a href="/Trang/tranglienheadmin.html">Thư liên hệ</a>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <nav class="navbar navbar-light bg-white shadow-sm p-3 mb-4">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary d-md-none" type="button" onclick="toggleSidebar()">☰</button>
+            <input class="form-control w-50" type="search" placeholder="Search" aria-label="Search">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Admin</span>
+            </div>
+        </div>
+    </nav>
+    <!-- Sơ đồ bàn -->
+    <div class="card mt-4">
+        <div class="card-header">Sơ đồ bàn</div>
+        <div class="card-body d-flex">
+            <!-- Danh sách khu vực -->
+            <div class="me-4">
+                <button class="btn btn-primary w-100 mb-2 area-btn active" data-area="main-hall">📍 Sảnh chính</button>
+                <button class="btn btn-outline-primary w-100 area-btn" data-area="outdoor">📍 Sảnh ngoài</button>
+            </div>
+
+            <!-- Bố trí bàn -->
+            <div class="flex-grow-1">
+                <div id="main-hall" class="area-layout">
+                    <div class="row">
+                        <div class="col-md-3"><div class="table-box">1<br><small>Bàn trống</small></div></div>
+                        <div class="col-md-3"><div class="table-box">2<br><small>Bàn trống</small></div></div>
+                    </div>
+                </div>
+
+                <!-- Sảnh ngoài -->
+                <div id="outdoor" class="area-layout">
+                    <div class="row">
+                        <div class="col-md-3"><div class="table-box">5<br><small>Bàn trống</small></div></div>
+                        <div class="col-md-3"><div class="table-box">6<br><small>Bàn trống</small></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/JS/jquery-3.7.1.js"></script>
+<script>
+    document.querySelectorAll('.menu-toggle').forEach(item => {
+        item.addEventListener('click', () => {
+            let submenu = item.nextElementSibling;
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        const content = document.querySelector('.content');
+        if (sidebar.classList.contains('show')) {
+            content.style.marginLeft = '250px'; // Đẩy nội dung sang phải khi sidebar mở
+        } else {
+            content.style.marginLeft = '0'; // Quay lại khi sidebar đóng
+        }
+    }
+
+    $(document).ready(function () {
+        // Ẩn tất cả khu vực bàn trừ sảnh chính
+        $(".area-layout").hide();
+        $("#main-hall").show();
+
+        $(".area-btn").click(function () {
+            // Xóa class active khỏi tất cả nút
+            $(".area-btn").removeClass("active btn-primary").addClass("btn-outline-primary");
+            $(this).removeClass("btn-outline-primary").addClass("active btn-primary");
+
+            // Lấy ID khu vực
+            let selectedArea = $(this).data("area");
+
+            // Kiểm tra khu vực tồn tại trước khi hiển thị
+            if ($("#" + selectedArea).length) {
+                $(".area-layout").hide(); // Ẩn tất cả khu vực trước khi hiển thị khu vực mới
+                $("#" + selectedArea).fadeIn(200);
+            } else {
+                console.error("Khu vực không tồn tại:", selectedArea);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
+    <script src="/JS/jquery-3.7.1.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .sidebar a:hover {
+            background: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+        .submenu {
+            padding-left: 30px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 14px;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .menu-toggle {
+            cursor: pointer;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .total-price {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Sidebar on mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px; /* Hide sidebar */
+            }
+            .sidebar.show {
+                left: 0; /* Show sidebar */
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h4 class="text-center">Administration</h4>
+    <a href="/Trang/trangadmin.html">📊 Thống kê</a>
+
+    <a class="menu-toggle">📜 Hóa đơn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/xacnhandon.html">✔️ Xác nhận đơn</a>
+        <a href="#">📦 Đơn đã được gửi</a>
+    </div>
+
+    <a class="menu-toggle">🪑 Mặt bàn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/sodoban.html">📍 Sơ đồ bàn</a>
+        <a href="/Trang/lichdatbanadmin.html">📅 Lịch đặt bàn</a>
+    </div>
+
+    <a href="#">🛍 Mặt hàng</a>
+
+    <a class="menu-toggle" href="/Trang/trangnhanvien.html">👥 Nhân viên </a>
+    <a class="menu-toggle">⚙️ Hệ thống ⬇</a>
+    <div class="submenu">
+        <a href="#">📑 Quản lý Menu</a>
+        <a href="/Trang/tranglienheadmin.html">Thư liên hệ</a>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <nav class="navbar navbar-light bg-white shadow-sm p-3 mb-4">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary d-md-none" type="button" onclick="toggleSidebar()">☰</button>
+            <input class="form-control w-50" type="search" placeholder="Search" aria-label="Search">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Admin</span>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h2>Danh sách mặt hàng</h2>
+        <button class="btn btn-primary mb-3" onclick="themMatHang()">➕ Thêm mặt hàng</button>
+        <div>
+            <button id="show-all" class="btn btn-secondary">Xem tất cả</button>
+            <button class="btn btn-info filter-btn" data-category="nuong">Món Nướng</button>
+            <button class="btn btn-info filter-btn" data-category="lau">Món Lẩu</button>
+            <button class="btn btn-info filter-btn" data-category="khai_vi">Món Khai Vị</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Mặt hàng</th>
+                    <th>Danh mục</th>
+                    <th>Giá thành</th>
+                    <th>Đơn vị tính</th>
+                    <th>Ghi chú</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="danhSachMatHang"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.menu-toggle').forEach(item => {
+        item.addEventListener('click', () => {
+            let submenu = item.nextElementSibling;
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        const content = document.querySelector('.content');
+        if (sidebar.classList.contains('show')) {
+            content.style.marginLeft = '250px'; // Đẩy nội dung sang phải khi sidebar mở
+        } else {
+            content.style.marginLeft = '0'; // Quay lại khi sidebar đóng
+        }
+    }
+
+    // Xử lý mặt hàng
+    $(document).ready(function () {
+        let danhSachMatHang = JSON.parse(localStorage.getItem("danhSachMatHang")) || [];
+
+        function hienThiMatHang(danhMuc = "all") {
+            let tableBody = $("#danhSachMatHang");
+            tableBody.html(""); // Xóa danh sách cũ
+
+            let danhSachLoc = danhMuc === "all" ? danhSachMatHang : danhSachMatHang.filter(item => item.danhMuc === danhMuc);
+
+            danhSachLoc.forEach((matHang, index) => {
+                let row = `
+                    <tr class="${matHang.danhMuc || 'Khác'}">
+                        <td><img src="${matHang.anh || matHang.img}" width="50"></td>
+                        <td>${matHang.ten || matHang.name}</td>
+                        <td>${matHang.danhMuc || 'Khác'}</td>
+                        <td>${matHang.gia || matHang.price} đ</td>
+                        <td>${matHang.donVi || 'Phần'}</td>
+                        <td>${matHang.ghiChu || ''}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="chinhSuaMatHang(${index})">✏️ Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="xoaMatHang(${index})">❌ Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.append(row);
+            });
+
+            localStorage.setItem("danhSachMatHang", JSON.stringify(danhSachMatHang));
+        }
+
+        // Sự kiện lọc theo danh mục
+        $(".filter-btn").click(function () {
+            let danhMuc = $(this).attr("data-category"); 
+            hienThiMatHang(danhMuc);
+        });
+
+        $("#show-all").click(function () {
+            hienThiMatHang("all");
+        });
+
+        // Thêm món mới
+        window.themMatHang = function () {
+            let ten = prompt("Nhập tên món:");
+            let danhMuc = prompt("Nhập danh mục (nuong, lau, khai_vi...):");
+            let gia = prompt("Nhập giá:");
+            let donVi = prompt("Nhập đơn vị tính:");
+            let ghiChu = prompt("Nhập ghi chú:");
+            let anh = prompt("Nhập URL ảnh:");
+
+            if (ten && gia) {
+                danhSachMatHang.push({ ten, danhMuc, gia, donVi, ghiChu, anh });
+                hienThiMatHang();
+                alert("Món ăn đã được thêm thành công!");
+
+                localStorage.setItem("danhSachMatHang", JSON.stringify(danhSachMatHang));
+                window.dispatchEvent(new Event("storage"));
+            } else {
+                alert("Tên và giá không được để trống!");
+            }
+        };
+
+        // Xóa món ăn
+        window.xoaMatHang = function (index) {
+            if (confirm("Bạn có chắc muốn xóa món này không?")) {
+                danhSachMatHang.splice(index, 1);
+                hienThiMatHang();
+            }
+        };
+
+        // Chỉnh sửa món ăn
+        window.chinhSuaMatHang = function (index) {
+            let matHang = danhSachMatHang[index];
+
+            let ten = prompt("Nhập tên món:", matHang.ten);
+            let danhMuc = prompt("Nhập danh mục:", matHang.danhMuc);
+            let gia = prompt("Nhập giá:", matHang.gia);
+            let donVi = prompt("Nhập đơn vị tính:", matHang.donVi);
+            let ghiChu = prompt("Nhập ghi chú:", matHang.ghiChu);
+            let anh = prompt("Nhập URL ảnh:", matHang.anh);
+
+            if (ten && gia) {
+                danhSachMatHang[index] = { ten, danhMuc, gia, donVi, ghiChu, anh };
+                hienThiMatHang();
+                alert("Món ăn đã được cập nhật!");
+
+                localStorage.setItem("danhSachMatHang", JSON.stringify(danhSachMatHang));
+                window.dispatchEvent(new Event("storage"));
+            } else {
+                alert("Tên và giá không được để trống!");
+            }
+        };
+
+        // Cập nhật danh sách trên menu khi admin thay đổi
+        window.addEventListener("storage", function (event) {
+            if (event.key === "danhSachMatHang") {
+                danhSachMatHang = JSON.parse(event.newValue);
+                hienThiMatHang("all");
+            }
+        });
+
+        // Hiển thị lần đầu
+        hienThiMatHang("all");
+    });
+</script>
+
+</body>
+</html>

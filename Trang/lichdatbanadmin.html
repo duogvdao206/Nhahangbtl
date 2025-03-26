@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .sidebar a:hover {
+            background: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+        .submenu {
+            padding-left: 30px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 14px;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .menu-toggle {
+            cursor: pointer;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* Khi màn hình nhỏ hơn 768px (mobile), sidebar sẽ ẩn đi */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px; /* Ẩn sidebar */
+            }
+            .sidebar.show {
+                left: 0; /* Hiển thị sidebar khi nhấn nút menu */
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h4 class="text-center">Administration</h4>
+    <a href="/Trang/trangadmin.html">📊 Thống kê</a>
+
+    <a class="menu-toggle">📜 Hóa đơn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/xacnhandon.html">✔️ Xác nhận đơn</a>
+        <a href="/Trang/lichsudonhang.html">📦 Đơn đã được gửi</a>
+    </div>
+
+    <a class="menu-toggle">🪑 Mặt bàn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/sodoban.html">📍 Sơ đồ bàn</a>
+        <a href="#">📅 Lịch đặt bàn</a>
+    </div>
+
+    <a href="/Trang/mathang.html">🛍 Mặt hàng</a>
+
+    <a class="menu-toggle" href="/Trang/trangnhanvien.html">👥 Nhân viên </a>
+    <a class="menu-toggle">⚙️ Hệ thống ⬇</a>
+    <div class="submenu">
+        <a href="#">📑 Quản lý Menu</a>
+        <a href="/Trang/tranglienheadmin.html">Thư liên hệ</a>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <nav class="navbar navbar-light bg-white shadow-sm p-3 mb-4">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary d-md-none" type="button" onclick="toggleSidebar()">☰</button>
+            <input class="form-control w-50" type="search" placeholder="Search" aria-label="Search">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <h4 class="mb-3">Dashboard</h4>
+    
+    <!-- Lịch đặt bàn -->
+    <div class="container mt-4">
+        <h3>Lịch Đặt Bàn</h3>
+        <div id="booking-list" class="row">
+            <!-- Dữ liệu sẽ được thêm vào đây -->
+        </div>
+    </div>
+</div>
+
+<!-- Script để mở rộng menu con -->
+<script>
+    document.querySelectorAll('.menu-toggle').forEach(item => {
+        item.addEventListener('click', () => {
+            let submenu = item.nextElementSibling;
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        const content = document.querySelector('.content');
+        if (sidebar.classList.contains('show')) {
+            content.style.marginLeft = '250px'; // Đẩy nội dung sang phải khi sidebar mở
+        } else {
+            content.style.marginLeft = '0'; // Quay lại khi sidebar đóng
+        }
+    }
+
+    // call api
+    document.addEventListener("DOMContentLoaded", function () {
+        // Gọi API để lấy danh sách đặt bàn khi trang tải
+        fetch("https://67b294e9bc0165def8cddd1d.mockapi.io/api/v1/DatBan")
+            .then(response => response.json())
+            .then(data => renderBookings(data))
+            .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
+
+        function renderBookings(bookings) {
+            const bookingList = document.getElementById("booking-list");
+            bookingList.innerHTML = ""; // Xóa nội dung cũ trước khi render
+
+            bookings.forEach(booking => {
+                // Hiển thị các trường dữ liệu từ API
+                const ngayGio = booking.ngay_gio ? new Date(booking.ngay_gio).toLocaleString() : 'Chưa có thông tin';
+                const gia = booking.gia ? booking.gia.toLocaleString() : 'Chưa có thông tin';
+                const songuoi = booking.songuoi ? booking.songuoi : 'Chưa có thông tin';
+
+                const itemsList = booking.items ? booking.items.map(item => `${item.name} (Số lượng: ${item.quantity})`).join(", ") : 'Chưa có món ăn';
+
+                const bookingCard = `
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Bàn số ${booking.Soban}</h5>
+                                <p class="card-text">⏰ Ngày giờ: ${ngayGio}</p>
+                                <p class="card-text">👥 Số người: ${songuoi}</p>
+                                <p class="card-text">💰 Giá: ${gia} đ</p>
+                                <p class="card-text">📌 Món đã đặt: ${itemsList}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                bookingList.innerHTML += bookingCard;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        .sidebar a:hover {
+            background: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+        .submenu {
+            padding-left: 30px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 14px;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .menu-toggle {
+            cursor: pointer;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .total-price {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Sidebar on mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px; /* Hide sidebar */
+            }
+            .sidebar.show {
+                left: 0; /* Show sidebar */
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <h4 class="text-center">Administration</h4>
+    <a href="/Trang/trangadmin.html">📊 Thống kê</a>
+
+    <a class="menu-toggle">📜 Hóa đơn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/xacnhandon.html">✔️ Xác nhận đơn</a>
+        <a href="#">📦 Đơn đã được gửi</a>
+    </div>
+
+    <a class="menu-toggle">🪑 Mặt bàn ⬇</a>
+    <div class="submenu">
+        <a href="/Trang/sodoban.html">📍 Sơ đồ bàn</a>
+        <a href="/Trang/lichdatbanadmin.html">📅 Lịch đặt bàn</a>
+    </div>
+
+    <a href="/Trang/mathang.html">🛍 Mặt hàng</a>
+
+    <a class="menu-toggle" href="/Trang/trangnhanvien.html">👥 Nhân viên </a>
+    <a class="menu-toggle">⚙️ Hệ thống ⬇</a>
+    <div class="submenu">
+        <a href="#">📑 Quản lý Menu</a>
+        <a href="/Trang/tranglienheadmin.html">Thư liên hệ</a>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<div class="content">
+    <nav class="navbar navbar-light bg-white shadow-sm p-3 mb-4">
+        <div class="container-fluid">
+            <!-- Button to toggle sidebar on small screens -->
+            <button class="btn btn-outline-secondary d-md-none" type="button" onclick="toggleSidebar()">☰</button>
+            <input class="form-control w-50" type="search" placeholder="Search" aria-label="Search">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <h4 class="mb-3">Dashboard</h4>
+    
+    <!-- Lịch sử đơn hàng -->
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Lịch sử đơn hàng</h5>
+            <button class="btn btn-primary">➕ Tạo đơn mới</button>
+        </div>
+        <div class="card-body">
+            <!-- Thanh lọc trạng thái -->
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <button class="btn btn-outline-primary filter-btn" data-status="all">Tất cả</button>
+                    <button class="btn btn-outline-secondary filter-btn" data-status="pending">Chờ xác nhận</button>
+                    <button class="btn btn-outline-success filter-btn" data-status="paid">Đã thanh toán</button>
+                    <button class="btn btn-outline-danger filter-btn" data-status="canceled">Đã hủy</button>
+                </div>
+                <input type="text" id="search-box" class="form-control w-25" placeholder="Nhập từ khóa tìm kiếm...">
+            </div>
+
+            <!-- Bảng lịch sử đơn hàng -->
+            <div class="table-responsive">
+                <table class="table table-bordered" id="order-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>STT</th>
+                            <th>Thu ngân</th>
+                            <th>Khu vực/Bàn</th>
+                            <th>Thông tin KH</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu API sẽ được thêm vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script để mở rộng menu con -->
+<script>
+    document.querySelectorAll('.menu-toggle').forEach(item => {
+        item.addEventListener('click', () => {
+            let submenu = item.nextElementSibling;
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        const content = document.querySelector('.content');
+        if (sidebar.classList.contains('show')) {
+            content.style.marginLeft = '250px'; // Đẩy nội dung sang phải khi sidebar mở
+        } else {
+            content.style.marginLeft = '0'; // Quay lại khi sidebar đóng
+        }
+    }
+
+    // call api
+    document.addEventListener("DOMContentLoaded", function () {
+        const paidOrders = JSON.parse(localStorage.getItem('paidOrders')) || []; // Lấy các đơn đã thanh toán từ localStorage
+
+        // Hiển thị các đơn hàng đã thanh toán
+        renderOrderTable(paidOrders);
+
+        function renderOrderTable(orders) {
+            const orderTableBody = document.querySelector("#order-table tbody");
+            orderTableBody.innerHTML = ""; // Xóa nội dung cũ trước khi render
+
+            orders.forEach((order, index) => {
+                const Soban = order.soban ? order.soban : "Không có";
+                const Songuoi = order.sokhach ? order.sokhach : "Không có";
+                const gia = order.gia ? order.gia.toLocaleString() + " đ" : "Không có";
+                const ngayGio = order["ngay-gio"] ? new Date(order["ngay-gio"] * 1000).toLocaleString() : "Không có";
+
+                const orderRow = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${Soban}</td>
+                        <td>${Songuoi}</td>
+                        <td>${gia}</td>
+                        <td>${ngayGio}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm">👁️ Chi tiết</button>
+                            <button class="btn btn-dark btn-sm">🖨️ In</button>
+                        </td>
+                    </tr>
+                `;
+                orderTableBody.innerHTML += orderRow;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            max-width: 900px;
+            margin-top: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-align: center;
+            color: #0d6efd;
+        }
+        .total-price {
+            color: red;
+            font-weight: bold;
+        }
+        .payment-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+    <div class="container">
+        <h3 class="text-center text-success">THANH TOÁN TRƯỚC CHO ĐƠN ĐẶT BÀN</h3>
+    
+        <div class="row">
+            <!-- Thông tin đặt bàn -->
+            <div class="col-md-7">
+                <div class="card mb-3">
+                    <div class="card-header">Thông tin đơn đặt bàn</div>
+                    <div class="card-body">
+                        <p><strong>Tên người đặt bàn:</strong> <span id="hoten"></span></p>
+                        <p><strong>Điện thoại:</strong> <span id="sodt"></span></p>
+                        <p><strong>Thời gian dùng bữa dự kiến:</strong> <span id="thoigian"></span></p>
+                        <p><strong>Địa điểm dùng bữa:</strong> <span id="nhahang"></span></p>
+                    </div>
+                </div>
+    
+                <!-- Danh sách món ăn -->
+                <div class="card">
+                    <div class="card-header">Thực đơn đặt trước</div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Món ăn</th>
+                                    <th>Giá bán</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-items">
+                                <!-- Danh sách món ăn được thêm vào từ localStorage -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3"><strong>Tổng cộng</strong></td>
+                                    <td><strong id="total-quantity">0</strong></td>
+                                    <td class="total-price" id="total-price">0 đ</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Box Thanh toán -->
+            <div class="col-md-5">
+                <div class="payment-box">
+                    <h5 class="text-center text-primary">THANH TOÁN</h5>
+                    <p><strong>Tạm tính:</strong> <span id="temporary-total">0 đ</span></p>
+                    <p><strong>Tiền bàn:</strong>150 000đ </p>
+                    
+    
+                    <h6>Phương thức thanh toán</h6>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment" id="pay1" checked>
+                        <label class="form-check-label" for="pay1">Thanh toán tại nhà hàng</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment" id="pay2">
+                        <label class="form-check-label" for="pay2">Thanh toán qua ví VNPAY</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment" id="pay3">
+                        <label class="form-check-label" for="pay3">Chuyển khoản ngân hàng</label>
+                    </div>
+    
+                    <button class="btn btn-primary mt-3">THANH TOÁN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        // Lấy dữ liệu đặt bàn từ localStorage
+        const orderData = JSON.parse(localStorage.getItem("orderData")) || {};
+        if (!orderData.hoten || !orderData.sodt) {
+            alert("Dữ liệu đặt bàn không hợp lệ. Vui lòng đặt bàn lại!");
+            window.location.href = "/Trang/datban.html"; 
+        }
+
+        // Hiển thị thông tin đặt bàn
+        document.getElementById("hoten").textContent = orderData.hoten;
+        document.getElementById("sodt").textContent = orderData.sodt;
+        document.getElementById("thoigian").textContent = `${orderData.ngay} (${orderData.khunggio})`;
+        document.getElementById("nhahang").textContent = orderData.nhahang;
+
+        // Hiển thị danh sách món ăn
+        const cartItems = document.getElementById("cart-items");
+        cartItems.innerHTML = "";
+        let totalQuantity = 0;
+        let totalPrice = 0;
+        
+        orderData.monan.forEach((item, index) => {
+            let itemTotal = item.quantity * parseInt(item.price.replace(/\D/g, ""));
+            totalQuantity += item.quantity;
+            totalPrice += itemTotal;
+
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${itemTotal.toLocaleString()} đ</td>
+            `;
+            cartItems.appendChild(row);
+        });
+        
+        document.getElementById("total-quantity").textContent = totalQuantity;
+        document.getElementById("total-price").textContent = totalPrice.toLocaleString() + " đ";
+    });
+
+    document.querySelector('.btn-primary').addEventListener('click', function() {
+        const orderData = JSON.parse(localStorage.getItem("orderData"));
+        
+        if (!orderData || orderData.monan.length === 0) {
+            alert("Dữ liệu không hợp lệ! Vui lòng kiểm tra lại.");
+            return;
+        }
+
+        const apiData = {
+            nhahang: orderData.nhahang,
+            hoten: orderData.hoten,
+            ngay: orderData.ngay,
+            sokhach: parseInt(orderData.sokhach, 10),
+            sodt: parseInt(orderData.sodt, 10),
+            khunggio: `${orderData.ngay}T${orderData.khunggio}:00`,
+            loinhan: orderData.loinhan,
+            monan: orderData.monan, // Gửi danh sách món ăn lên API
+            trangthai: "Chờ xác nhận" // Thêm trường mới
+        };
+
+        fetch('https://67b294e9bc0165def8cddd1d.mockapi.io/api/v1/DatBan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(apiData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi API');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Thanh toán thành công!");
+            localStorage.removeItem("cart");
+            localStorage.removeItem("orderData");
+            window.location.href = "/Trang/tranguser.html";
+        })
+        .catch(error => {
+            alert("Có lỗi xảy ra khi thanh toán, vui lòng thử lại!");
+            console.error("Lỗi:", error);
+        });
+    });
+    </script>
+</body>
+</html>
