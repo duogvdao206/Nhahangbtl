@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập</title>
     <!-- Thêm liên kết đến Bootstrap CSS -->
-    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
 </head>
-<body class="d-flex justify-content-center align-items-center" style="height: 100vh; background-image: url('/Img/sukien1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<body class="d-flex justify-content-center align-items-center" style="height: 100vh; background-image: url('Img/sukien1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
 <div class="login-container bg-white p-4 rounded shadow-sm" style="width: 300px;">
     <h2 class="text-center text-dark">Đăng Nhập</h2>
@@ -23,7 +23,7 @@
         </div>
         <button type="submit" class="btn btn-dark w-100">Đăng Nhập</button>
     </form>
-    <p class="mt-3">Bạn chưa có tài khoản?<a href="/Trang/register.html" class="text-decoration-none"> Đăng ký ngay.</a></p>
+    <p class="mt-3">Bạn chưa có tài khoản?<a href="Trang/register.html" class="text-decoration-none"> Đăng ký ngay.</a></p>
 </div>
 
 <!-- Thêm liên kết đến Bootstrap JS và Popper.js -->
@@ -51,7 +51,7 @@
                 alert("Đăng nhập thành công!");
                 localStorage.setItem("username", foundUser.username); // Lưu username vào Local Storage
                 localStorage.setItem("userId", foundUser.id); // Lưu ID người dùng (nếu cần)
-                window.location.href = "/Trang/tranguser.html"; // Chuyển hướng đến trang user
+                window.location.href = "Trang/tranguser.html"; // Chuyển hướng đến trang user
             } else {
                 alert("Tên đăng nhập hoặc mật khẩu không đúng!");
             }
