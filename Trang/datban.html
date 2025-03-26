@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dat Ban</title>
-    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.css">
-    <script src="/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/JS/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+    <script src="bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/jquery-3.7.1.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
@@ -17,9 +17,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/Trang/tranguser.html">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Trang/menu.html">Thực đơn</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Trang/datban.html">Đặt bàn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/tranguser.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/menu.html">Thực đơn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Trang/datban.html">Đặt bàn</a></li>
                 </ul>
                 <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="🔎 Tìm kiếm món ăn...">
@@ -27,7 +27,7 @@
                 <div class="auth-cart ms-3">
                     <a href="#" class="login text-decoration-none">Đăng nhập</a>
                     <button onclick="logout()" class="btn btn-outline-danger ms-2">Đăng xuất</button>
-                    <a href="/Trang/menu.html" class="giohang text-decoration-none">🛒</a>
+                    <a href="Trang/menu.html" class="giohang text-decoration-none">🛒</a>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
                 </form>
             </div>
             <div class="col-md-5 offset-md-1 text-center">
-                <img src="/IMG/anhbackgoundnhahang.jpg" alt="Image Placeholder" class="img-fluid rounded">
+                <img src="IMG/anhbackgoundnhahang.jpg" alt="Image Placeholder" class="img-fluid rounded">
             </div>
         </div>
     </div>
@@ -146,7 +146,7 @@
                 loginLink.textContent = username;
                 loginLink.href = "#";
             } else {
-                loginLink.href = "/Trang/login.html";
+                loginLink.href = "Trang/login.html";
             }
 
             document.getElementById('orderForm').addEventListener('submit', function(event) {
@@ -168,14 +168,14 @@
                 }
 
                 localStorage.setItem('orderData', JSON.stringify(orderData));
-                window.location.href = "/Trang/thanhtoan.html";
+                window.location.href = "Trang/thanhtoan.html";
             });
         });
 
         function logout() {
             localStorage.removeItem("username");
             localStorage.removeItem("userId");
-            window.location.href = "/Trang/login.html";
+            window.location.href = "Trang/login.html";
         }
 
         function updateCartTableBody() {
